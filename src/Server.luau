@@ -3,8 +3,8 @@ remote.Parent = script.Parent
 
 remote.OnServerEvent:Connect(function(plr, operand, tool)
 	if operand == "Equip" then
-		plr.Character.Humanoid:EquipTool(tool)
+		tool.Parent = plr.Character
 	elseif operand == "Unequip" then
-		plr.Character.Humanoid:UnequipTools()
+		tool.Parent = plr.Backpack
 	end
 end)
