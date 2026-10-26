@@ -34,6 +34,8 @@ local Backpack = {}
 --[[ SETTINGS ]]--
 Backpack.Settings = require(script:WaitForChild("BackpackSettings"))
 
+local remote = script.Parent:WaitForChild("RemoteEvent")
+
 if RunService:IsServer() then error("[BackpackManager]: BackpackManager cannot be required on the server.", 0) end
 
 --*/ Don't touch */--
@@ -2834,12 +2836,12 @@ function Backpack:Equip(ToolOrSlot, Generic : boolean, RespectsCooldown: boolean
 	if HBarSlot.Glued then return end
 
 	if Tool.Parent == Character then
-		Tool.Parent = BackpackInstance
+		remote:FireServer("Unequip", Tool)
 		return
 	end
 
 	if #Backpack:GetEquippedTools() < Backpack.Settings.MaxHeldTools then
-		Tool.Parent = Character
+		remote:FireServer("Equip", Tool)
 	else
 		-- If the player has the max amount of tools we need to search for a non glued tool to unequip
 
@@ -2847,8 +2849,8 @@ function Backpack:Equip(ToolOrSlot, Generic : boolean, RespectsCooldown: boolean
 			if not Slot.Tool then continue end
 
 			if Slot.Tool.Parent == Character and not Slot.Glued then
-				Slot.Tool.Parent = BackpackInstance
-				Tool.Parent = Character
+				remote:FireServer("Unequip", Slot.Tool)
+				remote:FireServer("Equip", Tool)
 				break
 			end
 		end
